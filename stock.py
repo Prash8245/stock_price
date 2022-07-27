@@ -20,6 +20,7 @@ st.set_page_config(
 st.cache(suppress_st_warning=True)
 
 
+st.image("image.jpg",)
 st.title("Stock Price Prediction")
 
 api_key = 'IVJUYAOTBM2RG2BI'
@@ -68,11 +69,14 @@ if sym:
         st.line_chart(high1)
 
         st.subheader('Volume of Stock Sold')
-        high2 = pd.DataFrame(data)
+        chr = pd.DataFrame(data['5. volume'])
+        chr = chr.iloc[:100,:]
+        high2 = pd.DataFrame(chr)
         st.line_chart(high2)
 
         st.subheader('Observed , Trend , Seasonality')
-        st.line_chart(daf)
+        inp = daf.iloc[:100,:]
+        st.line_chart(inp)
 
     elif(select == 'Previous History'):
         st.subheader('Enter the Date to search')
@@ -82,6 +86,7 @@ if sym:
             try:
                 res = data.loc[date_1]
                 st.write(res)
+                st.write(meta_data)
 
             except:
                 st.write("**This is Not A business Date Please Re-enter**")
