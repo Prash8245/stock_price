@@ -116,7 +116,7 @@ if sym:
             'Close' : pred_close['predicted_mean']
         }
         df = pd.DataFrame(predicted)
-        st.write(df)
+        #st.write(df)
 
         st.subheader('Enter the Date {should be less than 10 days far}')
         date_ = st.text_input('Enter the Date in YYYY-MM-DD Format')
