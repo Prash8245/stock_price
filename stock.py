@@ -17,6 +17,8 @@ st.set_page_config(
          'About': "This App is Created By **Prashanth**"
      }
  )
+st.cache(suppress_st_warning=True)
+
 
 st.title("Stock Price Prediction")
 
@@ -27,17 +29,12 @@ sym = None
 #st.write(type(sym))
 sym = st.text_input('Enter the Stock Symbol For Prediction with .BSE extention')
 
-try:
-    if sym:
-        data1,meta_data1 = ts.get_daily(symbol=sym,outputsize='full')
-        st.header("First 10 Data")
-        st.write(data1.head(10))  
+if sym:
+    data,meta_data = ts.get_daily(symbol=sym,outputsize='full')
+    st.header("First 10 Data")
+    st.write(data.head(10))  
 
-except:
-    st.error("Enter The Correct Details !!")
 
-try:
-    data,meta_data = ts.get_daily(symbol=sym)
     def assign(data2):
         value = pd.DataFrame(data2)                             #To predict Open Values
         value = value.asfreq('B',method='pad')
@@ -64,12 +61,10 @@ try:
     daf = pd.DataFrame(dic)
 
 
-    #st.write(df)
-
     select = st.sidebar.selectbox('SELECT',('Select','Chart','Prediction','Previous History'))
-    if (select == 'Chart'):
+    if(select == 'Chart'):
         st.subheader('Company Chart')
-        high1 = pd.DataFrame(data1['2. high'])
+        high1 = pd.DataFrame(data['2. high'])
         st.line_chart(high1)
 
         st.subheader('Volume of Stock Sold')
@@ -80,13 +75,12 @@ try:
         st.line_chart(daf)
 
     elif(select == 'Previous History'):
-        date_1 = None
         st.subheader('Enter the Date to search')
         date_1= st.text_input('Enter the Date in YYYY-MM-DD Format')
         date_1= date_1+'T00:00:00'
         if(date_1):
             try:
-                res = data1.loc[date_1]
+                res = data.loc[date_1]
                 st.write(res)
 
             except:
@@ -95,8 +89,7 @@ try:
     elif(select=='Select'):
         pass
 
-    else:
-        date_ = None
+    elif(select == 'Prediction'):
         def mode(data3):
             res = auto_arima(data3,trace=True)
             param = res.get_params()
@@ -123,7 +116,8 @@ try:
             'Close' : pred_close['predicted_mean']
         }
         df = pd.DataFrame(predicted)
-        
+        st.write(df)
+
         st.subheader('Enter the Date {should be less than 10 days far}')
         date_ = st.text_input('Enter the Date in YYYY-MM-DD Format')
         date_= date_+'T00:00:00'
@@ -135,7 +129,4 @@ try:
             except:
                 st.write("**This is Not A business Date Please Re-enter**")
 
-except:
-    if sym:
-        st.error("** Something went Wrong Please Try Again **")
 
